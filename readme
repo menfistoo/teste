@@ -1,1 +1,23 @@
+# Control de cenas de media pensión
 
+Aplicación web sencilla en Flask para cargar diariamente un archivo de Excel con la información de las habitaciones que tienen media pensión incluida. Permite marcar qué habitaciones ya ingresaron al comedor.
+
+## Requisitos
+
+- Python 3.11+
+- Dependencias del archivo `requirements.txt`
+
+## Uso
+
+1. Instala dependencias:
+   ```bash
+   pip install -r requirements.txt
+   ```
+2. Ejecuta la aplicación:
+   ```bash
+   flask --app app run --debug
+   ```
+3. Accede a `http://localhost:5000` y sube el Excel con las columnas **Room Number**, **Number of persons**, **Day of check out**, **Half-board Included?**.
+4. Marca las habitaciones que ya ingresaron. El estado se puede alternar en cualquier momento.
+
+> Nota: Los datos se almacenan en memoria y se pierden al reiniciar la aplicación.

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control de Media Pensión</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <main class="contenedor">
+        <header>
+            <h1>Control de cenas de media pensión</h1>
+            <p>Sube diariamente el listado de habitaciones con media pensión para llevar el control de los huéspedes que ingresan al comedor.</p>
+        </header>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <section class="mensajes">
+            {% for categoria, mensaje in messages %}
+            <div class="mensaje {{ categoria }}">{{ mensaje }}</div>
+            {% endfor %}
+        </section>
+        {% endif %}
+        {% endwith %}
+
+        <section class="subida">
+            <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
+                <label for="archivo">Archivo Excel (.xlsx) con las columnas: Room Number, Number of persons, Day of check out, Half-board Included?</label>
+                <input type="file" id="archivo" name="archivo" accept=".xlsx,.xls" required>
+                <button type="submit">Cargar listado</button>
+            </form>
+        </section>
+
+        <section class="tabla">
+            <h2>Habitaciones cargadas</h2>
+            {% if registros %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Habitación</th>
+                        <th>Personas</th>
+                        <th>Fecha de salida</th>
+                        <th>Media pensión incluida</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for registro in registros %}
+                    <tr class="estado-{{ registro.estado|lower }}">
+                        <td data-label="Habitación">{{ registro.habitacion }}</td>
+                        <td data-label="Personas">{{ registro.personas }}</td>
+                        <td data-label="Fecha de salida">{{ registro.salida }}</td>
+                        <td data-label="Media pensión incluida">{{ registro.media_pension }}</td>
+                        <td data-label="Estado">{{ registro.estado }}</td>
+                        <td data-label="Acciones">
+                            <form action="{{ url_for('toggle', record_id=registro.id) }}" method="post">
+                                <button type="submit">{{ 'Marcar pendiente' if registro.estado == 'Ingresó' else 'Marcar ingreso' }}</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="sin-datos">Aún no se han cargado habitaciones.</p>
+            {% endif %}
+        </section>
+    </main>
+</body>
+</html>
